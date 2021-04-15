@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Daftar;
 use Illuminate\Http\Request;
-use App\Models\Siswa;
 
 class DaftarController extends Controller
 {
-
     public function index()
     {
-        //
-    }
-
-    public function create()
-    {
-        return view('siswa.daftar');
+        $daftar = Daftar::latest()->get();
+        return view('admin.daftar.index', compact('daftar'));
     }
 
     public function store(Request $request)
@@ -31,57 +26,47 @@ class DaftarController extends Controller
             'asal_sekolah' => 'required',
             'kelas' => 'required',
             'jurusan' => 'required',
-
         ]);
+
         //fungsi eloquent untuk menambah data
-        Siswa::create($request->all());
+        Daftar::create($request->all());
+
         //jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('siswa.index')
-                    ->with('success', 'Anda sudah berhasil mengisi formulir pendaftaran');
+        return redirect()->route('admin.daftar.index')->with('success', 'Data berhasil di simpan');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        $daftar = Daftar::findOrFail($id);
+        return view('admin.daftar.edit', compact('daftar'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+         //melakukan validasi data
+         $request->validate([
+            'nis' => 'required',
+            'nama' => 'required',
+            'jk' => 'required',
+            'tempat_lahir' => 'required',
+            'tanggal_lahir' => 'required',
+            'alamat' => 'required',
+            'asal_sekolah' => 'required',
+            'kelas' => 'required',
+            'jurusan' => 'required',
+        ]);
+
+        //fungsi eloquent untuk menambah data
+        Daftar::findOrFail($id)->update($request->all());
+        //jika data berhasil ditambahkan, akan kembali ke halaman utama
+        return redirect()->route('admin.daftar.index')->with('success', 'Data berhasil di perbaharui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $data = Daftar::findOrFail($id);
+        $data->delete();
+        //jika data berhasil ditambahkan, akan kembali ke halaman utama
+        return redirect()->route('admin.daftar.index')->with('success', 'Data berhasil di hapus');
     }
 }

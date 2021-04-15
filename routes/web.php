@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DaftarController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/admin/home', function () {
+    return view('admin.home');
+});
+
+
+// ADMIN
+Route::prefix('/admin')->name('admin.')->group(function () {
+    Route::prefix('/daftar')->name('daftar.')->group(function () {
+        Route::get('/index', [DaftarController::class, 'index'])->name('index');
+        Route::post('/store', [DaftarController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [DaftarController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [DaftarController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [DaftarController::class, 'destroy'])->name('destroy');
+    });
 });
